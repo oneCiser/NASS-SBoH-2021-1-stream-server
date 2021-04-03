@@ -5,7 +5,7 @@ import { HttpException } from '../exceptions';
 import { ResourceService } from '../services';
 import { Readable } from 'stream';
 import { decryptFile } from '../utils';
-
+import {createDecipheriv} from 'crypto';
 /**
  *
  * The controller of resources
@@ -31,6 +31,7 @@ class ResourceExampleController {
         console.log('Antes de cargar el archivo');
         
         const file = await decryptFile(pathVideo);// Se desifra el archivo completo
+        const decipher = createDecipheriv('aes-256-cbc', Buffer.from("8BZ3pCTp71LX5I//QsBYdz7w4JHXNVehSBXuXnScdqg=",'base64'), Buffer.from("AAAAAAAAAAAAAAAAAAAAAA==",'base64'));
         const videoPath = file; //Buffer del archivo descifrado
         const videoSize = videoPath.length;// Tamaño del buffer en bytes
         console.log('Despues de descifrar');
@@ -76,21 +77,22 @@ class ResourceExampleController {
           };
           console.log('Antes del header');
           res.writeHead(206, headers);
+          res.write(file.slice(start, end + 1));
           //Se crea un stream redable
-          const readable = new Readable();
-          readable._read = () => {} // _read is required but you can noop it
-          //Se le pasa al stream el subchunk
-          console.log('Antes de hacer pull al redable');
-          readable.push(file.slice(start, end + 1));
-          //Para cada stream es necesario que lo ultimo sea null
-          console.log('Set null');
-          readable.push(null)
-          //Se pasan los headers a la cabecera
+          // const readable = new Readable();
+          // readable._read = () => {} // _read is required but you can noop it
+          // //Se le pasa al stream el subchunk
+          // console.log('Antes de hacer pull al redable');
+          // readable.push(file.slice(start, end + 1));
+          // //Para cada stream es necesario que lo ultimo sea null
+          // console.log('Set null');
+          // readable.push(null)
+          // //Se pasan los headers a la cabecera
           
-          //Se envia el res mediante el pipe del stream redable
-          console.log('Antes del pipe');
-          readable.pipe(res);
-          console.log('Despues del pipe');
+          // //Se envia el res mediante el pipe del stream redable
+          // console.log('Antes del pipe');
+          // readable.pipe(res);
+          // console.log('Despues del pipe');
           
           
           
