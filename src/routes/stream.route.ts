@@ -21,7 +21,7 @@ class ExampleRouter  {
 
   createRoutes(): void {
     this.router.get(
-      `/loadvideo/:id/:ud`,
+      `/:id/:ud`,
       // passport.authenticate('jwt',{session:false}),
       (req: Request, res: Response, next: NextFunction) => StreamVideoController
       .loadVideo(req, res, next)
