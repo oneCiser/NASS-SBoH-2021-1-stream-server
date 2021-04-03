@@ -37,17 +37,17 @@ class ResourceExampleController {
         if(!range){
           console.log('No tiene rango');
           // res.send(file);
-          const headers = {
-            'Content-Length': videoSize,
-            'Content-Type': 'video/mp4',
-          }
-          res.writeHead(200, headers);
-          const readable = new Readable();
-          readable._read = () => {} // _read is required but you can noop it
-          //Se le pasa al stream el subchunk
-          readable.push(file);
-          //Para cada stream es necesario que lo ultimo sea null
-          readable.push(null)
+          // const headers = {
+          //   'Content-Length': videoSize,
+          //   'Content-Type': 'video/mp4',
+          // }
+          // res.writeHead(200, headers);
+          // const readable = new Readable();
+          // readable._read = () => {} // _read is required but you can noop it
+          // //Se le pasa al stream el subchunk
+          // readable.push(file);
+          // //Para cada stream es necesario que lo ultimo sea null
+          // readable.push(null)
           //Se pasan los headers a la cabecera
           
           //Se envia el res mediante el pipe del stream redable
