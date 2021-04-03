@@ -30,16 +30,10 @@ class ResourceExampleController {
         if(getFile.url == "") pathVideo = `${process.env.FILE_STORAGE}/users/${user._id}/${getFile.name}`;
         console.log('Antes de cargar el archivo');
         
-        let file = await decryptFile(pathVideo);// Se desifra el archivo completo
+        const file = await decryptFile(pathVideo);// Se desifra el archivo completo
         const videoPath = file; //Buffer del archivo descifrado
         const videoSize = videoPath.length;// Tamaño del buffer en bytes
         console.log('Despues de descifrar');
-        
-        //Si no manda rango se le envia todo el archivo
-        // const videoSize = fs.statSync(pathVideo).size;
-        // const decipher = createDecipheriv('aes-256-cbc', Buffer.from("8BZ3pCTp71LX5I//QsBYdz7w4JHXNVehSBXuXnScdqg=", "base64"), Buffer.from("AAAAAAAAAAAAAAAAAAAAAA==", "base64"));
-        
-
         if(!range){
           console.log('No tiene rango');
           // res.send(file);
@@ -57,7 +51,7 @@ class ResourceExampleController {
           //Se pasan los headers a la cabecera
           
           //Se envia el res mediante el pipe del stream redable
-          readable.pipe(res);
+          res.send(file)
 
 
           // res.writeHead(200, headers)
@@ -82,51 +76,22 @@ class ResourceExampleController {
           };
           console.log('Antes del header');
           res.writeHead(206, headers);
-          // const file = fs.createReadStream(pathVideo, {start, end})
-          // file.pipe(decipher).pipe(res);
-          //End prueba
-
-
-          // const start = Number(range.replace(/\D/g, "")); // Inicio de cada rango
-          // const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-          // const contentLength = end - start +1 ;
-
-
-
-          // if(start >= videoSize - 1) {
-          //   res.send(file.slice(start, end));
-          //   console.log('End send')
-          // }
-          // else{
-            // console.log('Part contenent')
-            // // End de los bytes
-            //  // Largo del contenido
-            // //Cabeceras del request
-            // const headers = {
-            //   "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-            //   "Accept-Ranges": "bytes",
-            //   "Content-Length": contentLength,
-            //   "Content-Type": "video/mp4",
-            // };
-            // console.log(headers)
-            //console.log(file.slice(start, end))
-            // console.log('Ranges', range)
-            //Se crea un stream redable
-            const readable = new Readable();
-            readable._read = () => {} // _read is required but you can noop it
-            //Se le pasa al stream el subchunk
-            console.log('Antes de hacer pull al redable');
-            readable.push(file.slice(start, end + 1));
-            //Para cada stream es necesario que lo ultimo sea null
-            console.log('Set null');
-            readable.push(null)
-            //Se pasan los headers a la cabecera
-            
-            //Se envia el res mediante el pipe del stream redable
-            console.log('Antes del pipe');
-            readable.pipe(res);
-            console.log('Despues del pipe');
-          // }
+          //Se crea un stream redable
+          const readable = new Readable();
+          readable._read = () => {} // _read is required but you can noop it
+          //Se le pasa al stream el subchunk
+          console.log('Antes de hacer pull al redable');
+          readable.push(file.slice(start, end + 1));
+          //Para cada stream es necesario que lo ultimo sea null
+          console.log('Set null');
+          readable.push(null)
+          //Se pasan los headers a la cabecera
+          
+          //Se envia el res mediante el pipe del stream redable
+          console.log('Antes del pipe');
+          readable.pipe(res);
+          console.log('Despues del pipe');
+          
           
           
         }
